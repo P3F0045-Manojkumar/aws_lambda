@@ -23,7 +23,7 @@ jobs:
 
       - name: Download all ZIPs from S3
         run: |
-          mkdir lambda_zips
+          mkdir lambda_files
           aws s3 sync s3://s3lvm/ lambda_zips/
 
       - name: Extract ZIPs into folders
