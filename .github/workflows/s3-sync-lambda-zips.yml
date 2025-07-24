@@ -1,0 +1,33 @@
+
+name: Pull Lambda ZIPs from S3 to GitHub
+
+on:
+  workflow_dispatch:  
+
+jobs:
+  download-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync Lambda ZIPs from S3
+        run: |
+          mkdir -p lambda_zips
+          aws s3 sync s3://s3lvm/ lambda_zips/
+
+      - name: Commit and push Lambda ZIPs
+        run: |
+          git config user.name "Manojkumar"
+          git config user.email "g.manojkumar@p3fusion.com"
+          git add lambda_zips/
+          git commit -m "Sync Lambda ZIPs from S3" || echo "Nothing to commit"
+          git push
