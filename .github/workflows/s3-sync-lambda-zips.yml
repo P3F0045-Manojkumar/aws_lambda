@@ -1,9 +1,9 @@
-name: Sync Lambda ZIP Contents from S3 to GitHub (Organized)
+name: Sync Raw Lambda Files from S3 to GitHub (Root Sync)
 
 on:
   workflow_dispatch:
 
-jobs:
+jobs: 
   sync-s3-to-github:
     runs-on: ubuntu-latest
 
@@ -18,40 +18,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Create working directory
-        run: mkdir -p lambda_raw
-
-      - name: Download from S3 to local
+      - name: Sync raw files from S3 to repository root
         run: |
-          aws s3 sync s3://s3lvm/ lambda_raw/ --exact-timestamps
-
-      - name: Organize folders by prefix
-        run: |
-          mkdir -p SCCoaching SCHDS SCCLX Others
-
-          for dir in lambda_raw/*; do
-            name=$(basename "$dir")
-
-            if [[ "$name" == SCCoaching_* ]]; then
-              func="${name#SCCoaching_}"
-              mkdir -p "SCCoaching/$func"
-              cp -r "$dir/"* "SCCoaching/$func/"
-
-            elif [[ "$name" == SCHDS_* ]]; then
-              func="${name#SCHDS_}"
-              mkdir -p "SCHDS/$func"
-              cp -r "$dir/"* "SCHDS/$func/"
-
-            elif [[ "$name" == SCCLX_* ]]; then
-              func="${name#SCCLX_}"
-              mkdir -p "SCCLX/$func"
-              cp -r "$dir/"* "SCCLX/$func/"
-
-            else
-              mkdir -p "Others/$name"
-              cp -r "$dir/"* "Others/$name/"
-            fi
-          done
+          aws s3 cp s3://s3lvm/ ./ --recursive
 
       - name: Commit and push to GitHub
         run: |
@@ -59,5 +28,5 @@ jobs:
           git config user.email "g.manojkumar@p3fusion.com"
 
           git add .
-          git diff-index --quiet HEAD || git commit -m "Sync Lambda files from S3 (organized by prefix)"
+          git diff-index --quiet HEAD || git commit -m "Sync raw Lambda files from S3"
           git push
