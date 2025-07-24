@@ -1,14 +1,14 @@
-name: Upload Lambda ZIP contents to GitHub
+name: Sync Raw Lambda Files from S3 to GitHub
 
 on:
   workflow_dispatch:
 
 jobs:
-  extract-and-push:
+  sync-s3-to-github:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -18,37 +18,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Install unzip
-        run: sudo apt-get install -y unzip
-
-      - name: Download all ZIPs from S3
-        run: |
-          aws s3 sync s3://s3lvm/ lambda_zips/
-
-      - name: Extract ZIPs preserving S3 folder structure
+      - name: Sync raw files from S3 (no ZIPs)
         run: |
           mkdir -p lambda_versions
-          cd lambda_zips
-          
-          # For every zip file found...
-          find . -name "*.zip" | while read zip_path; do
-            # Remove the ./ prefix
-            clean_path=${zip_path#./}
-            
-            # Get the directory structure (e.g., Extention_route/v1)
-            base_dir=$(dirname "$clean_path")
-            
-            # Create destination directory in lambda_versions with same structure
-            mkdir -p "../lambda_versions/$base_dir"
-            
-            # Unzip into the destination
-            unzip -qq "$zip_path" -d "../lambda_versions/$base_dir"
-          done
+          aws s3 sync s3://s3lvm/ lambda_versions/ --exact-timestamps
 
-      - name: Commit & Push to repo
+      - name: Commit and push to GitHub
         run: |
           git config user.name "Manojkumar"
           git config user.email "g.manojkumar@p3fusion.com"
+
           git add lambda_versions
-          git commit -m "Update extracted Lambda versions from S3"
+          git diff-index --quiet HEAD || git commit -m "Sync raw Lambda files from S3"
           git push
