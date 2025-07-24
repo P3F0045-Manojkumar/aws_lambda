@@ -1,4 +1,4 @@
-name: Sync Raw Lambda Files from S3 to GitHub
+name: Sync Raw Lambda Files from S3 to GitHub (Root Sync)
 
 on:
   workflow_dispatch:
@@ -18,16 +18,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Sync raw files from S3 (no ZIPs)
+      - name: Sync raw files from S3 to repository root
         run: |
-          mkdir -p lambda_versions
-          aws s3 sync s3://s3lvm/ lambda_versions/ --exact-timestamps
+          aws s3 sync s3://s3lvm/ ./ --exact-timestamps
 
       - name: Commit and push to GitHub
         run: |
           git config user.name "Manojkumar"
           git config user.email "g.manojkumar@p3fusion.com"
 
-          git add lambda_versions
+          git add .
           git diff-index --quiet HEAD || git commit -m "Sync raw Lambda files from S3"
           git push
