@@ -1,7 +1,7 @@
 name: Upload Lambda ZIP contents to GitHub
 
 on:
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   extract-and-push:
@@ -16,31 +16,34 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 
+          aws-region: us-east-1
 
       - name: Install unzip
         run: sudo apt-get install -y unzip
 
       - name: Download all ZIPs from S3
         run: |
-          mkdir lambda_files
-          aws s3 sync s3://s3lvm/ lambda_files/
+          aws s3 sync s3://s3lvm/ lambda_zips/
 
-      - name: Extract ZIPs into folders
-        run: |
-          mkdir extracted
-          for zip in $(find lambda_files -name "*.zip"); do
-            # Get directory name from the path to name the folder
-            directory_name=$(basename $(dirname "$zip"))
-            dest="extracted/lambda_$directory_name"
-            mkdir -p "$dest"
-            unzip -qq "$zip" -d "$dest"
-          done
-
-      - name: Move extracted files into repo
+      - name: Extract ZIPs preserving S3 folder structure
         run: |
           mkdir -p lambda_versions
-          cp -r extracted/* lambda_versions/
+          cd lambda_zips
+          
+          # For every zip file found...
+          find . -name "*.zip" | while read zip_path; do
+            # Remove the ./ prefix
+            clean_path=${zip_path#./}
+            
+            # Get the directory structure (e.g., Extention_route/v1)
+            base_dir=$(dirname "$clean_path")
+            
+            # Create destination directory in lambda_versions with same structure
+            mkdir -p "../lambda_versions/$base_dir"
+            
+            # Unzip into the destination
+            unzip -qq "$zip_path" -d "../lambda_versions/$base_dir"
+          done
 
       - name: Commit & Push to repo
         run: |
