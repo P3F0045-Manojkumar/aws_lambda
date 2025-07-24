@@ -1,7 +1,7 @@
 name: Upload Lambda ZIP contents to GitHub
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   extract-and-push:
@@ -24,14 +24,15 @@ jobs:
       - name: Download all ZIPs from S3
         run: |
           mkdir lambda_files
-          aws s3 sync s3://s3lvm/ lambda_zips/
+          aws s3 sync s3://s3lvm/ lambda_files/
 
       - name: Extract ZIPs into folders
         run: |
           mkdir extracted
-          for zip in $(find lambda_zips -name "*.zip"); do
-            version=$(basename $(dirname "$zip"))
-            dest="extracted/$version"
+          for zip in $(find lambda_files -name "*.zip"); do
+            # Get directory name from the path to name the folder
+            directory_name=$(basename $(dirname "$zip"))
+            dest="extracted/lambda_$directory_name"
             mkdir -p "$dest"
             unzip -qq "$zip" -d "$dest"
           done
