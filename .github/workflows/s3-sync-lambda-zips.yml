@@ -1,9 +1,14 @@
-name: Sync Raw Lambda Files from S3 to GitHub (Root Sync)
+name: Sync Raw Lambda Files from S3 to GitHub (Filtered Sync)
 
 on:
   workflow_dispatch:
+    inputs:
+      lambda_prefix:
+        description: "S3 folder path to sync (e.g., SCCoaching/MyLambda)"
+        required: true
+        type: string
 
-jobs: 
+jobs:
   sync-s3-to-github:
     runs-on: ubuntu-latest
 
@@ -18,9 +23,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Sync raw files from S3 to repository root
+      - name: Sync Lambda folder from S3
         run: |
-          aws s3 cp s3://s3lvm/ ./ --recursive
+          mkdir -p "${{ github.event.inputs.lambda_prefix }}"
+          aws s3 cp "s3://s3lvm/${{ github.event.inputs.lambda_prefix }}/" "./${{ github.event.inputs.lambda_prefix }}/" --recursive
 
       - name: Commit and push to GitHub
         run: |
@@ -28,5 +34,5 @@ jobs:
           git config user.email "g.manojkumar@p3fusion.com"
 
           git add .
-          git diff-index --quiet HEAD || git commit -m "Sync raw Lambda files from S3"
+          git diff-index --quiet HEAD || git commit -m "Sync Lambda folder ${{ github.event.inputs.lambda_prefix }}"
           git push
