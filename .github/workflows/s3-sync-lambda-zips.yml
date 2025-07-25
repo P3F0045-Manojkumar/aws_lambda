@@ -2,12 +2,6 @@ name: Sync Raw Lambda Files from S3 to GitHub (Filtered Sync)
 
 on:
   workflow_dispatch:
-    inputs:
-      lambda_prefix:
-        description:
-        required: false
-        type: string
-
 jobs: 
   sync-s3-to-github:
     runs-on: ubuntu-latest
