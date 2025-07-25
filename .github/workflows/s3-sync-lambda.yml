@@ -19,7 +19,7 @@ jobs:
 
       - name: Sync raw files from S3 to repository root
         run: |
-          aws s3 cp s3://s3lvm/ ./ --recursive
+          aws s3 cp s3://lambda-pub-files/ ./ --recursive
 
       - name: Commit and push to GitHub
         run: |
