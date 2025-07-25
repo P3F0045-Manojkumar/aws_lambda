@@ -28,4 +28,5 @@ jobs:
 
           git add .
           git diff-index --quiet HEAD || git commit -m "Sync raw Lambda files from S3"
+          git pull --rebase origin main
           git push
