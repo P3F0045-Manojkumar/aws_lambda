@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* Loading Spinner */
+    :root {
+      --primary: #055647;
+      --primary-light: rgba(5, 86, 71, 0.1);
+      --primary-dark: #04443a;
+      --text-dark: #333333;
+      --text-light: #666666;
+      --border-color: #e0e0e0;
+      --success: #4CAF50;
+      --error: #F44336;
+      --background: #f7f9fc;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+  
+    body {
+      margin: 0;
+      background-color: var(--background);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px;
+      color: var(--text-dark);
+      background-color: var(--background);
+      border-radius: 12px;
+    }
+  
+    .header {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+  
+    .header h1 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-size: 28px;
+    }
+  
+    .current-id {
+      background-color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      border-left: 5px solid var(--primary);
+      box-shadow: var(--card-shadow);
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+          
+    .current-id h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 500;
+    }
+  
+    .current-badge {
+      background-color: var(--primary);
+      color: white;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-weight: 500;
+      margin-left: 10px;
+    }
+  
+    .highlight {
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 22px;
+      margin-left: 10px;
+    }
+  
+    .selection-form {
+      background-color: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: var(--card-shadow);
+      margin-top: 30px;
+    }
+  
+    .selection-form h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: var(--primary);
+      font-size: 18px;
+      font-weight: 500;
+      text-align: center;
+    }
+  
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 25px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+  
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-radius: 10px;
+      border: 2px solid var(--border-color);
+      background-color: white;
+      transition: var(--transition);
+      position: relative;
+    }
+  
+    .radio-option:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+  
+    .radio-option.selected {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+    }
+  
+    .radio-option input[type="radio"] {
+      margin-right: 15px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+  
+    .radio-option label {
+      display: flex;
+      flex: 1;
+      cursor: pointer;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .option-details {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .phone-number {
+      font-weight: bold;
+      color: var(--text-dark);
+      font-size: 18px;
+    }
+  
+    .queue-name {
+      color: var(--text-light);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+  
+    .form-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 25px;
+    }
+  
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      min-width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+  
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+  
+    button:active {
+      transform: translateY(0);
+    }
+  
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+  
+    /* Fixed loading spinner */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .spinner {
+      border: 6px solid rgba(5, 86, 71, 0.2);
+      border-top: 6px solid var(--primary);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+  
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 25px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeInDown 0.3s forwards;
+    }
+  
+    .notification-success {
+      background-color: var(--success);
+      border-left: 5px solid #378d3b;
+    }
+  
+    .notification-error {
+      background-color: var(--error);
+      border-left: 5px solid #c62828;
+    }
+  
+    .notification-icon {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  
+    @keyframes fadeInDown {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      margin-top: 30px;
+    }
+  
+    .empty-icon {
+      margin-bottom: 20px;
+    }
+  
+    .empty-message {
+      color: var(--text-light);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+  
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+        border-radius: 0;
+      }
+  
+      button {
+        width: 100%;
+      }
+      
+      .current-id {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .radio-option label {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .current-badge {
+        margin-top: 8px;
+        margin-left: 0;
+      }
+    }
+  </style>
+ 
+</head>
+<body>
+    <h1 class="Title"></h1>
+    
+
+  </body>
+</html>
