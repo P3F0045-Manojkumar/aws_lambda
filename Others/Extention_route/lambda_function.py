@@ -1,6 +1,6 @@
 import boto3
-import ossdf
-import jsonssss
+import os
+import json
 import time
 connect = boto3.client('connect')
 INSTANCE_ID = os.environ['INSTANCE_ID']
