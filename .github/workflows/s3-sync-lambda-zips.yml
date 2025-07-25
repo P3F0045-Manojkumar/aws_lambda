@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       lambda_prefix:
-        description: "S3 folder path to sync (e.g., SCCoaching/MyLambda)"
-        required: true
+        description:
+        required: false
         type: string
 
 jobs: 
