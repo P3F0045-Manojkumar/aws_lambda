@@ -1,9 +1,14 @@
-name: Sync Raw Lambda Files from S3 to GitHub (Filtered Sync)
+name: Sync and Build Lambda from S3 to GitHub
 
 on:
   workflow_dispatch:
-jobs: 
+  push:
+    branches:
+      - main
+
+jobs:
   sync-s3-to-github:
+    name: Sync Raw Lambda Files from S3
     runs-on: ubuntu-latest
 
     steps:
@@ -30,3 +35,28 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "Sync raw Lambda files from S3"
           git pull --rebase origin main
           git push
+
+  build:
+    name: Build and Analyze with SonarQube
+    runs-on: ubuntu-latest
+    needs: sync-s3-to-github
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      # Optional: Enforce Quality Gate
+      # - name: Quality Gate
+      #   uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
