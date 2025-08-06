@@ -37,5 +37,5 @@ jobs:
           ./sonar-scanner/bin/sonar-scanner \
             -Dsonar.projectKey=my_project_key \
             -Dsonar.sources=. \
-            -Dsonar.host.url=http://<your-sonarqube-ip>:9000 \
+            -Dsonar.host.url=http://host.docker.internal:9000 \
             -Dsonar.login=$SONAR_TOKEN
