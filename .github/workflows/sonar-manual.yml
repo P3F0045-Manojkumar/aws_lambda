@@ -35,7 +35,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./sonar-scanner/bin/sonar-scanner \
-            -Dsonar.projectKey=my_project_key \
+            -Dsonar.projectKey=lambda \
             -Dsonar.sources=. \
             -Dsonar.host.url=http://host.docker.internal:9000 \
             -Dsonar.login=$SONAR_TOKEN
