@@ -1,0 +1,41 @@
+name: SonarQube Manual Scan
+
+on:
+  workflow_dispatch:  # Only runs manually via UI
+
+jobs:
+  sonarqube:
+    name: Run SonarQube Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'  # Adjust to your project (e.g. 11 or 21)
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Download SonarScanner
+        run: |
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner-cli-*.zip
+          mv sonar-scanner-* sonar-scanner
+
+      - name: Run SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          ./sonar-scanner/bin/sonar-scanner \
+            -Dsonar.projectKey=my_project_key \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://<your-sonarqube-ip>:9000 \
+            -Dsonar.login=$SONAR_TOKEN
