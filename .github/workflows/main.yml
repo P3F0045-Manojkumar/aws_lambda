@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: SonarQube Scan (SCCoaching Only)
+      - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         with:
           args: >
