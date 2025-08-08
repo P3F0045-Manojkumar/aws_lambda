@@ -13,7 +13,7 @@ def lambda_handler(event, context):
     print("Event: ",event)    
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = event['Records'][0]['s3']['object']['key']
-    # bucket = os.environ['BUCKET_NAME']
+    # bucket = os.environ['BUCKET_NAME']   ertgwegtw4thw4h6tageatgr5
     # key = "previewCampaignData.csv"
     # purgeQueue = sqs.purge_queue(QueueUrl=QUEUE_URL)    
 
@@ -57,3 +57,4 @@ def lambda_handler(event, context):
             print(e)
 
     return {"status": "Messages sent to SQS"}
+
