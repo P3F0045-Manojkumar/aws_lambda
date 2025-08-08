@@ -10,6 +10,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check SonarQube Connectivity
+        run: curl -I https://fwcfn697-9000.inc1.devtunnels.ms
+
       - name: SonarQube Scan (SCCoaching Only)
         uses: sonarsource/sonarqube-scan-action@master
         with:
