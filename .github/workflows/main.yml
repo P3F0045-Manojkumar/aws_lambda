@@ -16,6 +16,7 @@ jobs:
           args: >
             -Dsonar.projectKey=Connect_Sharecare_SCCoaching
             -Dsonar.sources=SCCoaching
+            -Dsonar.ws.timeout=600
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
