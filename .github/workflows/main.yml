@@ -18,4 +18,4 @@ jobs:
             -Dsonar.sources=SCCoaching
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: "https://fwcfn697-9000.inc1.devtunnels.ms"
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
