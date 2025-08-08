@@ -3,6 +3,7 @@ import boto3
 import csv
 import os
 from datetime import datetime
+import csv
 
 sqs = boto3.client('sqs')
 
@@ -57,4 +58,5 @@ def lambda_handler(event, context):
             print(e)
 
     return {"status": "Messages sent to SQS"}
+
 
