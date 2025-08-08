@@ -571,18 +571,18 @@ export const handler = async (event) => {
         const seen = new Set();
 
         
-        const mappedQueues = queuesWithNumbers
-          .filter(queue => !queue.Queue.startsWith("IB")) 
-          .map(queue => {
-            const { displayName, uniqueKey } = getDisplayNameAndKey(queue, clientNames, aliasMap);
-            return { queue, displayName, uniqueKey };
-          })
-          .filter(({ uniqueKey }) => {
-            if (seen.has(uniqueKey)) return false;
-            seen.add(uniqueKey);
-            return true;
-          })
-          .sort((a, b) => a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase())); 
+        // const mappedQueues = queuesWithNumbers
+        //   .filter(queue => !queue.Queue.startsWith("IB")) 
+        //   .map(queue => {
+        //     const { displayName, uniqueKey } = getDisplayNameAndKey(queue, clientNames, aliasMap);
+        //     return { queue, displayName, uniqueKey };
+        //   })
+        //   .filter(({ uniqueKey }) => {
+        //     if (seen.has(uniqueKey)) return false;
+        //     seen.add(uniqueKey);
+        //     return true;
+        //   })
+        //   .sort((a, b) => a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase())); 
 
        
         mappedQueues.forEach(({ queue, displayName }) => {
