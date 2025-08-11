@@ -13,13 +13,11 @@ jobs:
       - name: Check SonarQube Server Availability
         run: |
           echo "Checking SonarQube server..."
-          status_code=$(curl -s -o /dev/null -w "%{http_code}" "$SONAR_HOST_URL")
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" "$SONAR_URL")
           if [ "$status_code" != "200" ]; then
             echo "Server is not reachable (HTTP $status_code)"
             exit 1
           fi
-        env:
-          SONAR_HOST_URL: "https://fwcfnn697-9000.inc1.devtunnels.ms"
 
       - name: SonarQube Scan with Retry
         run: |
@@ -31,7 +29,7 @@ jobs:
             if npx sonar-scanner \
               -Dsonar.projectKey=Connect_Sharecare_SCCoaching \
               -Dsonar.sources=./ \
-              -Dsonar.host.url="$SONAR_HOST_URL" \
+              -Dsonar.host.url="$SONAR_URL" \
               -Dsonar.token="$SONAR_TOKEN" \
               -Dsonar.scanner.connectTimeout=120000 \
               -Dsonar.scanner.readTimeout=120000; then
