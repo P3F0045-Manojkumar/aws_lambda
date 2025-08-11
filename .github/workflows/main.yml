@@ -24,7 +24,7 @@ jobs:
               -Dsonar.projectKey=Connect_Sharecare_SCCoaching \
               -Dsonar.sources=./ \
               -Dsonar.host.url="$SONAR_HOST_URL" \
-              -Dsonar.login="$SONAR_TOKEN" \
+              -Dsonar.token="$SONAR_TOKEN" \
               -Dsonar.scanner.connectTimeout=120000 \
               -Dsonar.scanner.readTimeout=120000; then
               echo "Scan successful!"
