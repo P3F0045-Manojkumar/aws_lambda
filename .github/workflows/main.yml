@@ -1,0 +1,43 @@
+name: Manual SonarQube Scan
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check SonarQube Connectivity
+        run: curl -I ${{ secrets.SONAR_URL }}
+
+      - name: SonarQube Scan with Retry
+        run: |
+          max_attempts=3
+          attempt=1
+          until [ $attempt -gt $max_attempts ]
+          do
+            echo "Attempt $attempt of $max_attempts..."
+            if npx sonar-scanner \
+              -Dsonar.projectKey=Connect_Sharecare_SCCoaching \
+              -Dsonar.sources=./ \
+              -Dsonar.host.url="$SONAR_HOST_URL" \
+              -Dsonar.login="$SONAR_TOKEN" \
+              -Dsonar.scanner.connectTimeout=120000 \
+              -Dsonar.scanner.readTimeout=120000; then
+              echo "Scan successful!"
+              break
+            fi
+            echo "Scan failed. Retrying in 10 seconds..."
+            sleep 10
+            attempt=$((attempt+1))
+          done
+          if [ $attempt -gt $max_attempts ]; then
+            echo "All attempts failed."
+            exit 1
+          fi
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
