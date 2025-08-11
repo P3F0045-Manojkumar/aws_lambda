@@ -19,7 +19,7 @@ jobs:
             exit 1
           fi
         env:
-          SONAR_HOST_URL: "https://fwcfn697-9000.inc1.devtunnels.ms"
+          SONAR_HOST_URL: "https://fwcfnn697-9000.inc1.devtunnels.ms"
 
       - name: SonarQube Scan with Retry
         run: |
