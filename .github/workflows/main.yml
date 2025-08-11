@@ -11,9 +11,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check SonarQube Connectivity
-        run: curl -I ${{ secrets.SONAR_URL }}
+        run: curl -I https://fwfn697-9000.inc1.devtunnels.ms
           echo "Checking SonarQube server..."
-          if ! curl -s -o /dev/null -w "%{http_code}" "$SONAR_HOST_URL" | grep -q "200"; then
+          if ! curl -s -o /dev/null -w "%{http_code}" "https://fwfn697-9000.inc1.devtunnels.ms" | grep -q "200"; then
             echo "Server is not reachable"
             exit 1
           fi
