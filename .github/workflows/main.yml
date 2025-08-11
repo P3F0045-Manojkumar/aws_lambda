@@ -12,11 +12,8 @@ jobs:
 
       - name: Check SonarQube Connectivity
         run: curl -I https://fwfn697-9000.inc1.devtunnels.ms
-          echo "Checking SonarQube server..."
-          if ! curl -s -o /dev/null -w "%{http_code}" "https://fwfn697-9000.inc1.devtunnels.ms" | grep -q "200"; then
-            echo "Server is not reachable"
-            exit 1
-          fi
+            if ! curl ... | grep -q "200"; then echo "Server is not reachable"; exit 1; fi
+
 
       - name: SonarQube Scan with Retry
         run: |
