@@ -24,8 +24,8 @@ jobs:
 
       - name: Commit and push to GitHub
         run: |
-          git config user.name "your-github-username" 
-          git config user.email "your-email@example.com"
+          git config user.name "github-username" 
+          git config user.email "email@example.com"
 
           git add .
           git diff-index --quiet HEAD || git commit -m "Sync raw Lambda files from S3"
