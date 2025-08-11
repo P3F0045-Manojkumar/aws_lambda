@@ -10,10 +10,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check SonarQube Connectivity
-        run: curl -I https://fwfn697-9000.inc1.devtunnels.ms
-            if ! curl ... | grep -q "200"; then echo "Server is not reachable"; exit 1; fi
-
+      - name: Check SonarQube Server Availability
+        run: |
+          echo "Checking SonarQube server..."
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" "$SONAR_HOST_URL")
+          if [ "$status_code" != "200" ]; then
+            echo "Server is not reachable (HTTP $status_code)"
+            exit 1
+          fi
+        env:
+          SONAR_HOST_URL: "https://fwcfn697-9000.inc1.devtunnels.ms"
 
       - name: SonarQube Scan with Retry
         run: |
