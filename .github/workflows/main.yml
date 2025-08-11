@@ -17,7 +17,11 @@ jobs:
           if [ "$status_code" != "200" ]; then
             echo "Server is not reachable (HTTP $status_code)"
             exit 1
+          else
+            echo "Server is reachable (HTTP $status_code). Proceeding to scan..."
           fi
+        env:
+          SONAR_URL: ${{ secrets.SONAR_URL }}
 
       - name: SonarQube Scan with Retry
         run: |
@@ -44,6 +48,3 @@ jobs:
             echo "All attempts failed."
             exit 1
           fi
-        # env:
-        #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        #   SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
