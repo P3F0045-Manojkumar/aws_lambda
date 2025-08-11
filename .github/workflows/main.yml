@@ -12,6 +12,11 @@ jobs:
 
       - name: Check SonarQube Connectivity
         run: curl -I ${{ secrets.SONAR_URL }}
+          echo "Checking SonarQube server..."
+          if ! curl -s -o /dev/null -w "%{http_code}" "$SONAR_HOST_URL" | grep -q "200"; then
+            echo "Server is not reachable"
+            exit 1
+          fi
 
       - name: SonarQube Scan with Retry
         run: |
